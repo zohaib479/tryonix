@@ -1,26 +1,70 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Default: Cyber-Tech */
+  --primary: #00f3ff;
+  --secondary: #bc13fe;
+  --bg: #0a0a0a;
+  --fg: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --accent: #ff00ff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme='luxury'] {
+  --primary: #c5a059; /* Gold */
+  --secondary: #2c2c2c;
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --card-bg: rgba(0, 0, 0, 0.02);
+  --accent: #8e733e;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+[data-theme='vibrant'] {
+  --primary: #ff006e;
+  --secondary: #3a86ff;
+  --bg: #0f172a;
+  --fg: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --accent: #fb5607;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.cyber-grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--primary) 0.05, transparent 1px),
+    linear-gradient(to bottom, var(--primary) 0.05, transparent 1px);
+  opacity: 0.1;
+}
+
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--fg), 0.1);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px var(--primary), 0 0 20px rgba(var(--primary), 0.4);
+}
+
+.premium-border {
+  border: 1px solid var(--primary);
+  box-shadow: 0 0 15px rgba(var(--primary), 0.2);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }
