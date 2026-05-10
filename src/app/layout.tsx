@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "TryOnix | Virtual Try-On",
     description: "Eliminating the fear of online shopping with AI-powered virtual try-on.",
-    url: "https://tryonix.ai",
+    url: "https://tryonix-nine.vercel.app/",
     siteName: "TryOnix",
     images: [
       {

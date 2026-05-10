@@ -1,144 +1,219 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendingUp, Users, ShoppingCart, ArrowDownLeft } from "lucide-react";
+import {
+  Cpu,
+  BrainCircuit,
+  Activity,
+  ScanFace,
+} from "lucide-react";
 
 const stats = [
   {
-    label: "CONVERSION INCREASE",
-    value: "+45%",
-    desc: "Average lift in sales after implementing virtual try-on.",
-    icon: <TrendingUp className="text-primary" />,
-    color: "from-primary/20 to-transparent"
+    title: "AI MATCHING",
+    value: "98.7%",
+    icon: BrainCircuit,
   },
   {
-    label: "REDUCED RETURNS",
-    value: "-62%",
-    desc: "Decrease in returns due to sizing and fit uncertainty.",
-    icon: <ArrowDownLeft className="text-accent" />,
-    color: "from-accent/20 to-transparent"
+    title: "LIVE SCAN",
+    value: "4.2M",
+    icon: ScanFace,
   },
   {
-    label: "USER ENGAGEMENT",
-    value: "4.5x",
-    desc: "More time spent on product pages compared to static images.",
-    icon: <Users className="text-secondary" />,
-    color: "from-secondary/20 to-transparent"
+    title: "DATA FLOW",
+    value: "12TB",
+    icon: Activity,
   },
   {
-    label: "ADD TO CART RATE",
-    value: "+38%",
-    desc: "Confidence-driven purchasing behavior for all garment types.",
-    icon: <ShoppingCart className="text-primary" />,
-    color: "from-primary/20 to-transparent"
-  }
+    title: "ENGINE SPEED",
+    value: "0.02s",
+    icon: Cpu,
+  },
 ];
 
-const BrandImpact = () => {
+export default function BrandImpact() {
   return (
-    <section className="py-24 px-6 relative overflow-hidden bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-primary font-bold tracking-[0.4em] text-xs mb-4">FOR THE VISIONARY BRAND</h2>
-          <h3 className="text-5xl md:text-8xl font-black mb-6 tracking-tighter">
-            DATA-DRIVEN <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">DOMINANCE</span>
-          </h3>
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg font-light leading-relaxed">
-            We don't just provide 3D models; we provide a sales engine. TryOnix is engineered to 
-            bridge the gap between digital browsing and physical confidence.
+    <section className="relative py-20 px-4 md:px-8 overflow-hidden bg-black text-white">
+
+      {/* GRID BG */}
+      <div className="absolute inset-0 opacity-[0.06]">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+      </div>
+
+      {/* GLOW */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-cyan-500/10 blur-[140px]" />
+
+      <div className="relative z-10 max-w-7xl mx-auto">
+
+        {/* HEADER */}
+        <div className="text-center mb-16">
+          <p className="text-cyan-400 text-[10px] tracking-[0.5em] uppercase mb-4 font-bold">
+            Neural Commerce Engine
           </p>
+
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tight">
+            AI POWERED
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500 text-transparent bg-clip-text italic">
+              RETAIL SYSTEM
+            </span>
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className={`relative p-8 glass border border-white/10 overflow-hidden group hover:border-primary/50 transition-all duration-500`}
-            >
-              {/* Background Gradient Glow */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-white/5 rounded-sm flex items-center justify-center mb-6 border border-white/5 group-hover:border-primary/20">
-                  {stat.icon}
+        {/* MAIN AI PANEL */}
+        <div className="relative rounded-[40px] border border-cyan-500/20 bg-white/[0.03] backdrop-blur-2xl overflow-hidden">
+
+          {/* Animated Lines */}
+          <div className="absolute inset-0 overflow-hidden">
+
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0.1, x: "-100%" }}
+                animate={{ x: "200%" }}
+                transition={{
+                  duration: 6 + i,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute h-[1px] w-[250px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"
+                style={{
+                  top: `${i * 8}%`,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-10 p-6 md:p-10 lg:p-14">
+
+            {/* LEFT */}
+            <div className="flex flex-col justify-center">
+
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center">
+                  <BrainCircuit className="w-7 h-7 text-cyan-400" />
                 </div>
-                <p className="text-[10px] font-black tracking-[0.3em] text-gray-500 uppercase mb-2">
-                  {stat.label}
-                </p>
-                <p className="text-5xl font-black mb-4 tracking-tighter group-hover:scale-110 transition-transform origin-left duration-500">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-gray-400 font-light leading-relaxed">
-                  {stat.desc}
-                </p>
+
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-cyan-400">
+                    ACTIVE SYSTEM
+                  </p>
+                  <h3 className="text-2xl md:text-4xl font-black">
+                    Neural AI Core
+                  </h3>
+                </div>
               </div>
 
-              {/* Decorative Corner */}
-              <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none opacity-20">
-                 <div className="absolute top-4 right-4 w-1 h-1 bg-primary" />
-                 <div className="absolute top-4 right-4 w-4 h-[1px] bg-primary" />
-                 <div className="absolute top-4 right-4 w-[1px] h-4 bg-primary" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              <p className="text-white/50 leading-relaxed max-w-xl mb-10">
+                Advanced real-time AI rendering engine designed for futuristic
+                fashion commerce experiences with biometric visualization and
+                smart fitting simulation.
+              </p>
 
-        {/* Sales Comparison Chart Placeholder */}
-        <div className="mt-20 p-12 glass border border-white/5 rounded-sm relative overflow-hidden">
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h4 className="text-2xl font-black mb-4 uppercase italic tracking-tighter">The Conversion Gap</h4>
-                <p className="text-gray-400 font-light mb-8">
-                  Traditional e-commerce relies on imagination. TryOnix relies on precision. 
-                  See how we transform window shoppers into brand loyalists.
-                </p>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-gray-500">
-                      <span>Traditional Commerce</span>
-                      <span>2.4% Conv.</span>
-                    </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "30%" }}
-                        className="h-full bg-gray-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-primary">
-                      <span>TryOnix Engine</span>
-                      <span>12.8% Conv.</span>
-                    </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden shadow-[0_0_10px_rgba(var(--primary),0.2)]">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "85%" }}
-                        className="h-full bg-primary"
-                      />
-                    </div>
-                  </div>
-                </div>
+              {/* STATS */}
+              <div className="grid grid-cols-2 gap-4">
+
+                {stats.map((item, i) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                    >
+                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-cyan-500/5 to-transparent" />
+
+                      <div className="relative z-10">
+                        <Icon className="w-5 h-5 text-cyan-400 mb-4" />
+
+                        <h4 className="text-3xl md:text-4xl font-black mb-2">
+                          {item.value}
+                        </h4>
+
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-bold">
+                          {item.title}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+
               </div>
-              <div className="relative">
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-sm flex items-center justify-center p-8">
-                   <div className="text-center">
-                      <p className="text-[10px] font-mono text-primary uppercase animate-pulse mb-4">Live Simulation: Active</p>
-                      <p className="text-3xl font-black uppercase tracking-tighter">Retail Transformation</p>
-                   </div>
-                </div>
-              </div>
-           </div>
+            </div>
+
+            {/* RIGHT AI VISUAL */}
+            <div className="relative min-h-[500px] flex items-center justify-center">
+
+              {/* OUTER RING */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute w-[340px] h-[340px] rounded-full border border-cyan-400/20"
+              />
+
+              {/* MIDDLE RING */}
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{
+                  duration: 14,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="absolute w-[260px] h-[260px] rounded-full border border-fuchsia-500/20"
+              />
+
+              {/* INNER CORE */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.08, 1],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                }}
+                className="relative w-[180px] h-[180px] rounded-full bg-gradient-to-br from-cyan-400 to-fuchsia-500 flex items-center justify-center shadow-[0_0_120px_rgba(0,255,255,0.25)]"
+              >
+                <BrainCircuit className="w-20 h-20 text-black" />
+              </motion.div>
+
+              {/* FLOATING NODES */}
+              {[...Array(10)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{
+                    y: [0, -20, 0],
+                    x: [0, 10, 0],
+                  }}
+                  transition={{
+                    duration: 3 + i * 0.3,
+                    repeat: Infinity,
+                  }}
+                  className="absolute w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_20px_cyan]"
+                  style={{
+                    top: `${10 + i * 7}%`,
+                    left: `${15 + i * 6}%`,
+                  }}
+                />
+              ))}
+
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default BrandImpact;
+}

@@ -1,257 +1,322 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ChevronLeft, Scan, ShoppingBag, RefreshCw } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
-const models = [
+/* ── Slides ─────────────────────────────────────────────────────── */
+const SLIDES = [
   {
     id: 1,
-    name: "CYBER-AESTHETIC-01",
-    type: "Classic Fit",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000&auto=format&fit=crop",
-    style: "Urban Techwear"
+    url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2400&auto=format&fit=crop",
+    collection: "SS 2025",
+    title: "PURE SILHOUETTE",
+    sub: "Deconstructed minimal tailoring",
+    tag: "NEW ARRIVAL",
+    index: "01",
   },
   {
     id: 2,
-    name: "CYBER-AESTHETIC-02",
-    type: "Slim Silhouette",
-    image: "https://images.unsplash.com/photo-1539109132381-31a05b33be6d?q=80&w=1000&auto=format&fit=crop",
-    style: "Neo-Classic"
+    url: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2400&auto=format&fit=crop",
+    collection: "NOIR EDIT",
+    title: "DARK LUXURY",
+    sub: "Evening wear redefined in shadow",
+    tag: "EXCLUSIVE",
+    index: "02",
   },
   {
     id: 3,
-    name: "CYBER-AESTHETIC-03",
-    type: "Athletic Build",
-    image: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1000&auto=format&fit=crop",
-    style: "Performance Pro"
-  }
+    url: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=2400&auto=format&fit=crop",
+    collection: "MASC SERIES",
+    title: "URBAN EDGE",
+    sub: "Streetwear precision with couture DNA",
+    tag: "BESTSELLER",
+    index: "03",
+  },
+  {
+    id: 4,
+    url: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2400&auto=format&fit=crop",
+    collection: "RESORT 2025",
+    title: "LIGHT TOUCH",
+    sub: "Ethereal layers for the avant-garde",
+    tag: "LIMITED",
+    index: "04",
+  },
+  {
+    id: 5,
+    url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=2400&auto=format&fit=crop",
+    collection: "ARCHIVES",
+    title: "TIMELESS CUT",
+    sub: "Heritage craft meets modern geometry",
+    tag: "ARCHIVE",
+    index: "05",
+  },
 ];
 
-const InteractiveDemo = () => {
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [isScanning, setIsScanning] = useState(false);
-  const [activeTab, setActiveTab] = useState("fit");
+const TOTAL = SLIDES.length;
 
-  const nextModel = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setCurrentIdx((prev) => (prev + 1) % models.length);
-      setIsScanning(false);
-    }, 1200);
+/* ── Progress bar ────────────────────────────────────────────────── */
+const ProgressBar = ({
+  active,
+  duration,
+}: {
+  active: boolean;
+  duration: number;
+}) => {
+  return (
+    <div className="relative h-[2px] bg-white/10 overflow-hidden flex-1">
+      {active && (
+        <motion.div
+          className="absolute inset-y-0 left-0 bg-white"
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: duration / 1000, ease: "linear" }}
+        />
+      )}
+      {!active && <div className="absolute inset-y-0 left-0 bg-white/0" />}
+    </div>
+  );
+};
+
+/* ── Main ────────────────────────────────────────────────────────── */
+const PremiumCollection = () => {
+  const [idx, setIdx] = useState(0);
+  const [prev, setPrev] = useState<number | null>(null);
+  const [paused, setPaused] = useState(false);
+  const DURATION = 4500;
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const goTo = (n: number) => {
+    setPrev(idx);
+    setIdx(n);
   };
 
-  const prevModel = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setCurrentIdx((prev) => (prev - 1 + models.length) % models.length);
-      setIsScanning(false);
-    }, 1200);
-  };
+  const next = () => goTo((idx + 1) % TOTAL);
+  const back = () => goTo((idx - 1 + TOTAL) % TOTAL);
+
+  useEffect(() => {
+    if (paused) return;
+    timerRef.current = setInterval(next, DURATION);
+    return () => clearInterval(timerRef.current!);
+  }, [idx, paused]);
+
+  const slide = SLIDES[idx];
 
   return (
-    <section id="demo" className="py-24 px-6 bg-black relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-cyber-cyan font-bold tracking-[0.3em] text-sm mb-4">LIVE INTERACTIVE EXPERIENCE</h2>
-          <h3 className="text-5xl md:text-7xl font-black mb-6">SEE IT TO <span className="text-cyber-cyan italic">BELIEVE</span> IT</h3>
-        </div>
+    <section
+      className="relative w-full overflow-hidden bg-black select-none"
+      style={{ height: "88vh" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* ── IMAGE LAYERS — stacked, crossfade, zero gap ── */}
+      {SLIDES.map((s, i) => (
+        <motion.div
+          key={s.id}
+          className="absolute inset-0"
+          initial={false}
+          animate={{ opacity: i === idx ? 1 : 0 }}
+          transition={{ duration: 1.1, ease: "easeInOut" }}
+          style={{ zIndex: i === idx ? 1 : 0 }}
+        >
+          {/* slight zoom-in on active */}
+          <motion.img
+            src={s.url}
+            alt=""
+            className="w-full h-full object-cover"
+            animate={{ scale: i === idx ? 1.05 : 1.0 }}
+            transition={{ duration: DURATION / 1000 + 1.1, ease: "linear" }}
+            style={{ filter: "grayscale(0.15) brightness(0.72)" }}
+          />
+        </motion.div>
+      ))}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left Panel: Stats/Info */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
-            <div className="p-6 glass border border-white/10 rounded-sm">
-              <h4 className="text-xs font-bold text-gray-500 tracking-widest uppercase mb-4">Model Specs</h4>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-[10px] text-cyber-cyan uppercase font-bold">Designation</p>
-                  <p className="text-lg font-bold">{models[currentIdx].name}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-cyber-cyan uppercase font-bold">Body Type</p>
-                  <p className="text-lg font-bold">{models[currentIdx].type}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] text-cyber-cyan uppercase font-bold">Current Style</p>
-                  <p className="text-lg font-bold">{models[currentIdx].style}</p>
-                </div>
-              </div>
-            </div>
+      {/* ── VIGNETTE ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.45) 100%), linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%)",
+          zIndex: 2,
+        }}
+      />
 
-            <div className="p-6 glass border border-cyber-cyan/30 rounded-sm flex-1">
-              <h4 className="text-xs font-bold text-cyber-cyan tracking-widest uppercase mb-4">Fitting Analysis</h4>
-              <div className="space-y-6">
-                {[
-                  { label: "Shoulder Alignment", val: "98.4%" },
-                  { label: "Chest Volume", val: "99.1%" },
-                  { label: "Waist Retention", val: "97.8%" },
-                  { label: "Fabric Tension", val: "Optimal" },
-                ].map((stat, i) => (
-                  <div key={i} className="flex justify-between items-end border-b border-white/5 pb-2">
-                    <span className="text-xs text-gray-400">{stat.label}</span>
-                    <span className="text-sm font-mono text-cyber-cyan">{stat.val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* ── NOISE GRAIN ── */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.025] mix-blend-screen"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: "160px 160px",
+          zIndex: 3,
+        }}
+      />
 
-          {/* Center: The Model View */}
-          <div className="lg:col-span-6 relative aspect-[3/4] lg:aspect-auto group overflow-hidden border border-white/10 rounded-sm">
+      {/* ── CONTENT ── */}
+      <div className="absolute inset-0 flex flex-col justify-between px-10 md:px-16 py-12" style={{ zIndex: 4 }}>
+
+        {/* TOP BAR */}
+        <div className="flex items-start justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-[10px] font-mono tracking-[0.4em] text-white/40 uppercase mb-1">
+              Premium Collection
+            </p>
+            <h2 className="text-2xl md:text-3xl font-black italic tracking-tighter text-white leading-none">
+              TRYONIX
+              <span className="not-italic text-white/25">_SHOWCASE</span>
+            </h2>
+          </motion.div>
+
+          {/* Slide counter */}
+          <div className="text-right hidden md:block">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIdx}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="absolute inset-0"
+              <motion.p
+                key={idx}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.4 }}
+                className="text-4xl font-black text-white/10 tracking-tighter leading-none font-mono"
               >
-                {/* Main Image with Aesthetic Overlays */}
-                <div className="relative w-full h-full">
-                  <img 
-                    src={models[currentIdx].image} 
-                    alt={models[currentIdx].name}
-                    className="w-full h-full object-cover brightness-[0.9] contrast-[1.1] transition-all duration-700"
-                  />
-                  {/* Subtle Vignette & Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-                  <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
-                  
-                  {/* Subtle Blue Tint Overlay for Cyber Aesthetic */}
-                  <div className="absolute inset-0 bg-cyber-cyan/5 mix-blend-overlay pointer-events-none" />
-                </div>
-              </motion.div>
+                {slide.index}
+              </motion.p>
             </AnimatePresence>
-
-            {/* Scanning Overlay */}
-            <AnimatePresence>
-              {isScanning && (
-                <motion.div 
-                  initial={{ top: "-10%" }}
-                  animate={{ top: "110%" }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.2, ease: "linear" }}
-                  className="absolute left-0 right-0 h-1 bg-cyber-cyan shadow-[0_0_20px_#00f3ff] z-20 pointer-events-none"
-                />
-              )}
-            </AnimatePresence>
-
-            {/* HUD Elements */}
-            <div className="absolute inset-0 pointer-events-none p-6 flex flex-col justify-between border-8 border-transparent group-hover:border-cyber-cyan/10 transition-colors">
-              <div className="flex justify-between items-start">
-                <div className="flex flex-col gap-1">
-                  <div className="w-8 h-[1px] bg-cyber-cyan" />
-                  <div className="w-[1px] h-8 bg-cyber-cyan" />
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-mono text-cyber-cyan animate-pulse">SYSTEM STATUS: ACTIVE</p>
-                  <p className="text-[10px] font-mono text-gray-500">RES: 3840 X 2160</p>
-                </div>
-              </div>
-              <div className="flex justify-between items-end">
-                <div className="text-[10px] font-mono text-gray-500">
-                  <p>LAT: 40.7128° N</p>
-                  <p>LONG: 74.0060° W</p>
-                </div>
-                <div className="flex flex-col gap-1 items-end">
-                  <div className="w-[1px] h-8 bg-cyber-cyan" />
-                  <div className="w-8 h-[1px] bg-cyber-cyan" />
-                </div>
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div className="absolute inset-x-0 bottom-0 p-8 flex justify-between items-center z-10">
-              <button 
-                onClick={prevModel}
-                disabled={isScanning}
-                className="p-4 bg-black/50 hover:bg-cyber-cyan hover:text-black transition-all rounded-full backdrop-blur-md border border-white/10"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button 
-                onClick={() => setIsScanning(true)}
-                disabled={isScanning}
-                className="px-8 py-3 bg-cyber-cyan text-black font-black tracking-widest text-xs flex items-center gap-2 hover:scale-105 transition-transform"
-              >
-                <Scan size={16} /> RE-SCAN
-              </button>
-              <button 
-                onClick={nextModel}
-                disabled={isScanning}
-                className="p-4 bg-black/50 hover:bg-cyber-cyan hover:text-black transition-all rounded-full backdrop-blur-md border border-white/10"
-              >
-                <ChevronRight size={24} />
-              </button>
-            </div>
-          </div>
-
-          {/* Right Panel: Shopping/Actions */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
-            <div className="flex bg-white/5 p-1 rounded-sm">
-              <button 
-                onClick={() => setActiveTab("fit")}
-                className={`flex-1 py-2 text-[10px] font-bold tracking-widest transition-all ${activeTab === "fit" ? "bg-cyber-cyan text-black" : "text-gray-400 hover:text-white"}`}
-              >
-                VIRTUAL FIT
-              </button>
-              <button 
-                onClick={() => setActiveTab("looks")}
-                className={`flex-1 py-2 text-[10px] font-bold tracking-widest transition-all ${activeTab === "looks" ? "bg-cyber-cyan text-black" : "text-gray-400 hover:text-white"}`}
-              >
-                AESTHETIC
-              </button>
-            </div>
-
-            <div className="flex-1 glass border border-white/10 p-6 flex flex-col justify-between">
-              <div>
-                <h4 className="text-xs font-bold text-gray-500 tracking-widest uppercase mb-6">Current Selection</h4>
-                <div className="bg-white/5 aspect-square rounded-sm mb-4 relative flex items-center justify-center overflow-hidden border border-white/5 group">
-                   <ShoppingBag className="w-12 h-12 text-white/20 group-hover:text-primary transition-colors" />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-4">
-                      <p className="text-sm font-bold uppercase tracking-tighter">Premium Collection</p>
-                   </div>
-                </div>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {["PANTS", "SHIRTS", "SHALWAR KAMEEZ", "KURTIES"].map((cat) => (
-                    <span key={cat} className="text-[8px] px-2 py-1 border border-white/10 rounded-full text-gray-500 font-black tracking-widest hover:border-primary hover:text-primary transition-all cursor-pointer">
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-[10px] text-gray-400 leading-relaxed mb-4">
-                  AI-Optimized draping engine for both Eastern and Western silhouettes. Ensuring precision fit for every stitch.
-                </p>
-                <div className="flex justify-between items-center text-xl font-black text-cyber-cyan">
-                  <span>$299.00</span>
-                  <div className="flex gap-1">
-                    <div className="w-4 h-4 bg-white rounded-full border border-cyber-cyan" />
-                    <div className="w-4 h-4 bg-cyber-cyan rounded-full" />
-                    <div className="w-4 h-4 bg-cyber-purple rounded-full" />
-                  </div>
-                </div>
-              </div>
-
-              <button className="w-full py-4 mt-8 bg-white text-black font-black tracking-widest text-xs hover:bg-cyber-cyan transition-all flex items-center justify-center gap-2">
-                ADD TO CART <ChevronRight size={14} />
-              </button>
-            </div>
-
-            <div className="p-4 bg-cyber-purple/10 border border-cyber-purple/30 rounded-sm">
-               <div className="flex items-center gap-3">
-                 <RefreshCw className="text-cyber-purple animate-spin-slow" />
-                 <div>
-                   <p className="text-[10px] font-bold text-cyber-purple uppercase">Style Recommendation</p>
-                   <p className="text-[11px] text-white/70">Pair with "Neural Joggers" for 94% match.</p>
-                 </div>
-               </div>
-            </div>
+            <p className="text-[9px] font-mono tracking-widest text-white/25 uppercase mt-1">
+              / {String(TOTAL).padStart(2, "0")}
+            </p>
           </div>
         </div>
+
+        {/* CENTRE TAG */}
+        <div className="flex-1 flex items-end pb-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -18, filter: "blur(4px)" }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="max-w-xl"
+            >
+              {/* Tag pill */}
+              <div className="inline-flex items-center gap-2 mb-4 px-3 py-1.5 border border-white/20 bg-white/5 backdrop-blur-sm">
+                <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                <span className="text-[9px] font-bold tracking-[0.35em] text-white uppercase font-mono">
+                  {slide.tag}
+                </span>
+              </div>
+
+              {/* Collection name */}
+              <p className="text-xs font-mono tracking-[0.3em] text-white/50 uppercase mb-2">
+                {slide.collection}
+              </p>
+
+              {/* Hero title */}
+              <h3 className="text-5xl md:text-7xl font-black tracking-tighter leading-none text-white mb-4">
+                {slide.title}
+              </h3>
+
+              {/* Sub */}
+              <p className="text-sm text-white/50 font-light tracking-wider leading-relaxed max-w-sm">
+                {slide.sub}
+              </p>
+
+              {/* CTA */}
+              <div className="flex items-center gap-5 mt-8">
+                <button className="group relative px-8 py-3.5 bg-white text-black font-black uppercase tracking-[0.15em] text-xs overflow-hidden transition-all duration-200 hover:scale-[1.03] active:scale-95">
+                  <span className="relative z-10">Try On Now</span>
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-600 bg-gradient-to-r from-transparent via-black/10 to-transparent skew-x-12" />
+                </button>
+                <button className="text-xs font-bold tracking-[0.2em] text-white/60 uppercase hover:text-white transition-colors duration-200 underline underline-offset-4">
+                  View Collection
+                </button>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* BOTTOM BAR */}
+        <div className="flex items-end justify-between gap-6">
+
+          {/* Progress bars */}
+          <div className="flex-1 space-y-2 max-w-xs hidden md:block">
+            <div className="flex gap-1.5">
+              {SLIDES.map((s, i) => (
+                <ProgressBar key={s.id} active={i === idx && !paused} duration={DURATION} />
+              ))}
+            </div>
+            <p className="text-[8px] font-mono tracking-widest text-white/25 uppercase">
+              {paused ? "PAUSED" : "AUTO ADVANCING"}
+            </p>
+          </div>
+
+          {/* Thumbnail strip */}
+          <div className="flex gap-2.5 items-end">
+            {SLIDES.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => goTo(i)}
+                className="relative overflow-hidden flex-shrink-0 transition-all duration-400"
+                style={{
+                  width: i === idx ? 72 : 44,
+                  height: i === idx ? 52 : 38,
+                  outline: i === idx ? "1.5px solid rgba(255,255,255,0.6)" : "1px solid rgba(255,255,255,0.1)",
+                  outlineOffset: 2,
+                }}
+              >
+                <img
+                  src={s.url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  style={{
+                    filter: i === idx ? "brightness(0.9)" : "brightness(0.45) grayscale(0.4)",
+                    transition: "filter 0.4s ease",
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Prev / Next */}
+          <div className="flex gap-2">
+            {[
+              { label: "←", fn: back },
+              { label: "→", fn: next },
+            ].map(({ label, fn }) => (
+              <button
+                key={label}
+                onClick={fn}
+                className="w-11 h-11 border border-white/15 flex items-center justify-center text-white/60 font-bold text-base hover:border-white/50 hover:text-white transition-all duration-200 active:scale-90 hover:bg-white/5 backdrop-blur-sm"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT EDGE — vertical slide title */}
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-10 hidden lg:flex flex-col items-center gap-3 pointer-events-none">
+        <div className="w-[1px] h-16 bg-gradient-to-b from-transparent to-white/20" />
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={idx}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-[8px] font-bold tracking-[0.35em] text-white/30 uppercase"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            {slide.collection}
+          </motion.span>
+        </AnimatePresence>
+        <div className="w-[1px] h-16 bg-gradient-to-b from-white/20 to-transparent" />
       </div>
     </section>
   );
 };
 
-export default InteractiveDemo;
+export default PremiumCollection;
